@@ -6,8 +6,8 @@ export default function Team() {
   return (
     <section className="team" id="team">
       <div className="team__container">
-        <p className="team__overline">The Dream Team:</p>
-        <h2 className="team__heading">Meet Our Stylists</h2>
+        <p className="team__overline">The Stylist</p>
+        <h2 className="team__heading">Meet Our Stylist</h2>
 
         <div className="team__grid">
           {TEAM_MEMBERS.map((member) => (
