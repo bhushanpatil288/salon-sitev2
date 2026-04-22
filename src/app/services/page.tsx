@@ -1,4 +1,5 @@
 import TopBar from "../components/TopBar";
+export const dynamic = 'force-dynamic';
 import Navbar from "../components/Navbar";
 import Services from "../components/Services";
 import Footer from "../components/Footer";
