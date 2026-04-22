@@ -30,7 +30,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   // Fetch Theme
   await dbConnect();
-  let themeConfig = await Theme.findOne();
+  let themeConfig = await Theme.findOne().lean() as any;
   if (!themeConfig) {
     themeConfig = {
       primaryColor: "#2a9d8f",
@@ -51,6 +51,11 @@ export default async function RootLayout({
         "--color-primary-light": themeConfig.primaryLightColor,
         "--color-accent": themeConfig.accentColor,
         "--color-accent-dark": themeConfig.accentDarkColor,
+        "--color-bg-white": themeConfig.backgroundColor || "#ffffff",
+        "--color-background": themeConfig.backgroundColor || "#ffffff",
+        "--color-text-dark": themeConfig.textColor || "#1a2332",
+        "--color-text-body": themeConfig.textColor || "#1a2332",
+        "--color-foreground": themeConfig.textColor || "#1a2332",
       } as React.CSSProperties}
     >
       <body>

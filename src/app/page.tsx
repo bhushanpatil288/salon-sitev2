@@ -28,12 +28,26 @@ export default async function Home() {
   const themeConfig = await Theme.findOne().lean();
   const activeFestival = themeConfig?.activeFestival || "default";
 
+  const STANDARD_FESTIVALS: Record<string, string> = {
+    default: "/hero-bg.png",
+    diwali: "https://res.cloudinary.com/dsyxsipwf/image/upload/v1776778840/diwali_zqijlv.jpg",
+    christmas: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&q=80&w=2000",
+    holi: "https://res.cloudinary.com/dsyxsipwf/image/upload/v1776779056/holi_kradyt.jpg",
+  };
+
+  let heroImage = STANDARD_FESTIVALS[activeFestival];
+  if (!heroImage && themeConfig?.customThemes) {
+    const customTheme = themeConfig.customThemes.find((t: any) => t.id === activeFestival);
+    if (customTheme) heroImage = customTheme.imagePreview;
+  }
+  if (!heroImage) heroImage = STANDARD_FESTIVALS.default;
+
   return (
     <>
       <TopBar />
       <Navbar />
       <main>
-        <Hero activeFestival={activeFestival} />
+        <Hero heroImage={heroImage} />
         <Services initialServices={serializedServices} isHome={true} />
         <About />
         <Team />
