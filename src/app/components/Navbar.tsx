@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
+  { label: "Services", href: "/services" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -28,9 +28,9 @@ export default function Navbar() {
         <ul className="navbar__links">
           {NAV_LINKS.map((link) => (
             <li key={link.label}>
-              <a href={link.href} className="navbar__link">
+              <Link href={link.href} className="navbar__link">
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

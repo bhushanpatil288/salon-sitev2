@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useAppSelector } from "../store";
+import { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../store";
+import { setServices } from "../store/servicesSlice";
+import Link from "next/link";
+import Image from "next/image";
 
 /** Icons are JSX (non-serialisable) so we keep them in the component keyed by service name */
 const SERVICE_ICONS: Record<string, React.ReactNode> = {
@@ -42,14 +45,23 @@ const SERVICE_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
-export default function Services() {
+export default function Services({ initialServices, isHome = false }: { initialServices?: { name: string; imageUrl?: string }[], isHome?: boolean }) {
+  const dispatch = useAppDispatch();
   const services = useAppSelector((state) => state.services.items);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (initialServices && initialServices.length > 0) {
+      dispatch(setServices(initialServices));
+    }
+  }, [initialServices, dispatch]);
+
+  const displayServices = isHome ? services.slice(0, 4) : services;
 
   const openModal = (index: number) => setActiveIndex(index);
   const closeModal = () => setActiveIndex(null);
 
-  const active = activeIndex !== null ? services[activeIndex] : null;
+  const active = activeIndex !== null ? displayServices[activeIndex] : null;
 
   return (
     <section className="services" id="services">
@@ -58,7 +70,7 @@ export default function Services() {
         <h2 className="services__heading">Services We Offer</h2>
 
         <div className="services__grid">
-          {services.map((service, i) => (
+          {displayServices.map((service, i) => (
             <div
               key={service.name}
               className="services__card"
@@ -72,13 +84,27 @@ export default function Services() {
                 }
               }}
             >
-              <div className="services__icon">
-                {SERVICE_ICONS[service.name]}
+              <div className="services__icon overflow-hidden rounded-full border border-gray-100 bg-white">
+                {(service as { imageUrl?: string }).imageUrl ? (
+                  <div className="relative w-full h-full">
+                    <Image src={(service as { imageUrl?: string }).imageUrl!} alt={service.name} fill className="object-cover" />
+                  </div>
+                ) : (
+                  SERVICE_ICONS[service.name]
+                )}
               </div>
               <h3 className="services__label">{service.name}</h3>
             </div>
           ))}
         </div>
+
+        {isHome && services.length > 4 && (
+          <div className="mt-12 text-center">
+            <Link href="/services" className="inline-flex items-center gap-2 px-8 py-3 bg-[#2a9d8f] hover:bg-[#1a7a6d] text-white text-xs font-semibold uppercase tracking-widest transition-colors shadow-sm">
+              More Services →
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* ── Service Detail Modal ── */}
@@ -127,11 +153,7 @@ export default function Services() {
                 {active.duration}
               </span>
               <span className="service-modal__badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="1" x2="12" y2="23" />
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-                From {active.startingPrice}
+                ₹ {active.startingPrice}
               </span>
             </div>
 

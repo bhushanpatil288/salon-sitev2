@@ -90,7 +90,13 @@ const initialState: ServicesState = {
 const servicesSlice = createSlice({
   name: "services",
   initialState,
-  reducers: {},
+  reducers: {
+    setServices: (state, action) => {
+      state.items = action.payload;
+      state.names = action.payload.map((s: { name: string }) => s.name);
+    }
+  },
 });
 
+export const { setServices } = servicesSlice.actions;
 export default servicesSlice.reducer;
